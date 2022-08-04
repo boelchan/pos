@@ -27,11 +27,11 @@ class UsersSeeder extends Seeder
 
         $demoUser = User::create([
             'name' => $faker->firstName,
-            'email' => 'operator@app.com',
+            'email' => 'kasir@app.com',
             'password' => Hash::make('123'),
             'email_verified_at' => now(),
         ]);
 
-        $demoUser->assignRole('operator');
+        $demoUser->assignRole('kasir');
     }
 }

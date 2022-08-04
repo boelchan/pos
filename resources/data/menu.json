@@ -8,6 +8,14 @@
         ]
     },
     {
+        "title": "POS",
+        "icon": "shopping-cart",
+        "url": "pos",
+        "role": [
+            "superadmin"
+        ]
+    },
+    {
         "title": "Sistem",
         "icon": "settings",
         "role": [
