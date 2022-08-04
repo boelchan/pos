@@ -41,8 +41,7 @@ Route::middleware(['auth', 'role:superadmin|kasir'])->group(function () {
     Route::post('/transcation/addproduct/{id}', [TransactionController::class, 'addProductCart']);
     Route::post('/transcation/removeproduct/{id}', [TransactionController::class, 'removeProductCart']);
     Route::post('/transcation/clear', [TransactionController::class, 'clear']);
-    Route::post('/transcation/increasecart/{id}', [TransactionController::class, 'increasecart']);
-    Route::post('/transcation/decreasecart/{id}', [TransactionController::class, 'decreasecart']);
+    Route::post('/transcation/updateCart/{id}', [TransactionController::class, 'updateCart']);
     Route::post('/transcation/bayar', [TransactionController::class, 'bayar']);
     Route::get('/transcation/laporan/{id}', [TransactionController::class, 'laporan'])->name('laporan');
     Route::get('/transcation/cetak/laporan/{id}', [TransactionController::class, 'cetakLaporan'])->name('cetak.laporan');

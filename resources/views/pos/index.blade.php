@@ -5,10 +5,10 @@
         <div class="col-md-8">
             <div class="card" style="min-height:85vh">
                 <div class="card-header">
-                    <div class="">
-                        <span class="fs-1">Produk</span>
+                    <div class="card-title fs-1">
+                        POS
                     </div>
-                    <div class="card-actions">
+                    <div class="card-actions pe-1">
                         <x-form :action="url('/transcation')" method="get">
                             <x-form-input name="search" placeholder="Cari produk" onblur="this.form.submit()"
                                 value="{{ request()->search }}" />
@@ -18,15 +18,13 @@
                 <div class="card-body">
                     <div class="row row-cards">
                         @foreach ($products as $product)
-                        <div class="col-md-3">
+                        <div class="col-md-3 p-1 mt-0">
                             <form action="{{url('/transcation/addproduct', $product->id)}}" method="POST">
                                 @csrf
-                                <div class="card cursor-pointer card-product border-info"
+                                <div class="card cursor-pointer card-product"
                                     onclick="this.closest('form').submit();return false;">
-                                    <div class="card-header py-0">
+                                    <div class="card-body py-0" style="height: 65px">
                                         <div class="text-uppercase fw-bold">{{ $product->sku }}</div>
-                                    </div>
-                                    <div class="card-body py-0" style="height: 45px">
                                         {{ Str::limit($product->name, 45) }}
                                     </div>
                                     <div class="card-footer py-0">
@@ -47,10 +45,10 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <span class="fs-1">Keranjang</span>
+                    <div class="card-title fs-1">Keranjang</div>
                 </div>
                 <div class="card-table">
-                    <div class="overflow-auto" style="height:51vh">
+                    <div class="overflow-auto" style="height:52vh">
                         <table class="table table-sm border-bottom table-hover">
                             @php $no=1 @endphp
                             @forelse($cart_data as $index=>$item)
@@ -60,7 +58,7 @@
                                 </td>
                                 <td width="60%">
                                     <span class="fw-bold d-block">
-                                        {{ Str::limit($item['name'], 50) }}
+                                        {{ $item['name'] }}
                                     </span>
                                     <form action="{{url('/transcation/removeproduct',$item['rowId'])}}" method="POST"
                                         class="d-inline cursor-pointer">
@@ -69,7 +67,7 @@
                                             <i class="ti ti-trash-x text-red"></i></a>
                                     </form>
 
-                                    <form action="{{url('/transcation/increasecart', $item['rowId'])}}" method="POST"
+                                    <form action="{{url('/transcation/updateCart', $item['rowId'])}}" method="POST"
                                         class="d-inline">
                                         @csrf
                                         <input name="qty" type="number" class="form-control py-0 px-1 d-inline"
@@ -123,7 +121,7 @@
                                     onclick="return confirm('Apakah anda yakin membatalkan transaksi ini ?');"
                                     type="submit">BATAL</button>
                             </form>
-                            <button class="btn card-btn bg-success" data-toggle="modal"
+                            <button class="btn bg-success card-btn" data-toggle="modal"
                                 data-target="#fullHeightModalRight">BAYAR</button>
                         </div>
                     </li>

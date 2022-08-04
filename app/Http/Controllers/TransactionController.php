@@ -28,7 +28,7 @@ class TransactionController extends Controller
             return $query->where('name', 'like', '%'.request('search').'%');
         })
             ->orderBy('name', 'asc')
-            ->simplePaginate(16);
+            ->simplePaginate(20);
 
         //cart item
         if (request()->discount) {
@@ -215,28 +215,7 @@ class TransactionController extends Controller
         return redirect()->back();
     }
 
-    public function decreasecart($id)
-    {
-        $product = Product::find($id);
-
-        $cart = \Cart::session(Auth()->id())->getContent();
-        $cek_itemId = $cart->whereIn('id', $id);
-
-        if ($cek_itemId[$id]->quantity == 1) {
-            \Cart::session(Auth()->id())->remove($id);
-        } else {
-            \Cart::session(Auth()->id())->update($id, [
-                'quantity' => [
-                    'relative' => true,
-                    'value' => -1,
-                ],
-            ]);
-        }
-
-        return redirect()->back();
-    }
-
-    public function increasecart($id, Request $request)
+    public function updateCart($id, Request $request)
     {
         $product = Product::find($id);
 
