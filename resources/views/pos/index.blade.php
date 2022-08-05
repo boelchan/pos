@@ -16,14 +16,14 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row row-cards">
+                    <div class="row row-cards pt-2">
                         @foreach ($products as $product)
                         <div class="col-md-3 p-1 mt-0">
                             <form action="{{url('/transcation/addproduct', $product->id)}}" method="POST">
                                 @csrf
                                 <div class="card cursor-pointer card-product"
                                     onclick="this.closest('form').submit();return false;">
-                                    <div class="card-body py-0" style="height: 65px">
+                                    <div class="card-body py-1" style="height: 65px">
                                         <div class="text-uppercase fw-bold">{{ $product->sku }}</div>
                                         {{ Str::limit($product->name, 45) }}
                                     </div>
@@ -48,8 +48,8 @@
                     <div class="card-title fs-1">Keranjang</div>
                 </div>
                 <div class="card-table">
-                    <div class="overflow-auto" style="height:52vh">
-                        <table class="table table-sm border-bottom table-hover">
+                    <div class="overflow-auto" style="height:53vh">
+                        <table class="table table-sm border-bottom table-hover w-100">
                             @php $no=1 @endphp
                             @forelse($cart_data as $index=>$item)
                             <tr>
@@ -58,7 +58,7 @@
                                 </td>
                                 <td width="60%">
                                     <span class="fw-bold d-block">
-                                        {{ $item['name'] }}
+                                        {!! $item['name'] !!}
                                     </span>
                                     <form action="{{url('/transcation/removeproduct',$item['rowId'])}}" method="POST"
                                         class="d-inline cursor-pointer">
