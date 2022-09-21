@@ -10,8 +10,7 @@
                     </div>
                     <div class="card-actions pe-1">
                         <x-form :action="url('/transcation')" method="get">
-                            <x-form-input name="search" placeholder="Cari produk" onblur="this.form.submit()"
-                                value="{{ request()->search }}" />
+                            <x-form-input name="search" placeholder="Cari produk" onblur="this.form.submit()" value="{{ request()->search }}" />
                         </x-form>
                     </div>
                 </div>
@@ -19,19 +18,17 @@
                     <div class="row row-cards pt-2">
                         @foreach ($products as $product)
                         <div class="col-md-3 p-1 mt-0">
-                            <form action="{{url('/transcation/addproduct', $product->id)}}" method="POST">
-                                @csrf
-                                <div class="card cursor-pointer card-product"
-                                    onclick="this.closest('form').submit();return false;">
-                                    <div class="card-body py-1" style="height: 65px">
+                            <x-form action="{{url('/transcation/addproduct', $product->id)}}" method="POST">
+                                <div class="card cursor-pointer card-product" onclick="this.closest('form').submit();return false;">
+                                    <div class="card-body p-1" style="height: 65px">
                                         <div class="text-uppercase fw-bold">{{ $product->sku }}</div>
                                         {{ Str::limit($product->name, 45) }}
                                     </div>
-                                    <div class="card-footer py-0">
+                                    <div class="card-footer py-0 px-1 text-end fw-bold">
                                         {{ rupiah($product->price) }}
                                     </div>
                                 </div>
-                            </form>
+                            </x-form>
                         </div>
                         @endforeach
                     </div>
@@ -45,48 +42,34 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title fs-1">Keranjang</div>
+                    <div class="card-title fs-1">Keranjang @if ($cart_data) ({{ $cart_data->count() }}) @endif</div>
                 </div>
-                <div class="card-table">
-                    <div class="overflow-auto" style="height:53vh">
-                        <table class="table table-sm border-bottom table-hover w-100">
-                            @php $no=1 @endphp
-                            @forelse($cart_data as $index=>$item)
-                            <tr>
-                                <td width="5%">
-                                    {{$no++}}
-                                </td>
-                                <td width="60%">
-                                    <span class="fw-bold d-block">
-                                        {!! $item['name'] !!}
-                                    </span>
-                                    <form action="{{url('/transcation/removeproduct',$item['rowId'])}}" method="POST"
-                                        class="d-inline cursor-pointer">
-                                        @csrf
-                                        <a onclick="this.closest('form').submit();return false;" title="Hapus item">
-                                            <i class="ti ti-trash-x text-red"></i></a>
-                                    </form>
-
-                                    <form action="{{url('/transcation/updateCart', $item['rowId'])}}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        <input name="qty" type="number" class="form-control py-0 px-1 d-inline"
-                                            style="width:50px" value="{{$item['qty']}}" onblur="this.form.submit()">
-                                    </form>
-                                    <div class="d-inline">
-                                        x {{ angka($item['pricesingle']) }}
-                                    </div>
-
-                                </td>
-                                <td width="35%" class="text-end align-middle">{{ rupiah($item['price']) }}</td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="text-center">Empty Cart</td>
-                            </tr>
-                            @endforelse
-                        </table>
+                <div class="card-body overflow-auto" style="height:53vh">
+                    @forelse($cart_data as $index=>$item)
+                    <div class="card mb-1">
+                        <div class="p-1">
+                            {{ $item['name'] }}
+                        </div>
+                        <div class="d-flex card-footer py-0 px-1">
+                            <div class="flex-grow-1">
+                                <x-form action="{{url('/transcation/removeproduct',$item['rowId'])}}" method="POST" class="d-inline cursor-pointer">
+                                    <a onclick="this.closest('form').submit();return false;" title="Hapus item"> <i class="ti ti-trash-x text-red"></i></a>
+                                </x-form>
+                                <x-form action="{{url('/transcation/updateCart', $item['rowId'])}}" method="POST" class="d-inline">
+                                    <input name="qty" type="number" class="form-control py-0 px-1 d-inline" style="width:50px" value="{{$item['qty']}}" onblur="this.form.submit()">
+                                </x-form>
+                                x {{ angka($item['pricesingle']) }}
+                            </div>
+                            <div class="-end fw-bold">
+                                {{ rupiah($item['price']) }}
+                            </div>
+                        </div>
                     </div>
+                    @empty
+                    <div class="row">
+                        <span class="text-center">Empty Cart</span>
+                    </div>
+                    @endforelse
                 </div>
             </div>
 
@@ -96,8 +79,7 @@
                         <div class="d-flex justify-content-between">
                             <span> Diskon </span>
                             <form action="{{ url('/transcation') }}" method="get">
-                                <input type="number" class="form-control text-end pe-3 py-0" name="discount"
-                                    value="{{ $data_total['discount'] }}" onchange="this.form.submit()">
+                                <input type="number" class="form-control text-end pe-3 py-0" name="discount" value="{{ $data_total['discount'] }}" onchange="this.form.submit()">
                             </form>
                         </div>
                     </li>
@@ -117,12 +99,9 @@
                         <div class="d-flex">
                             <form action="{{ url('/transcation/clear') }}" method="POST">
                                 @csrf
-                                <button class="btn bg-danger card-btn"
-                                    onclick="return confirm('Apakah anda yakin membatalkan transaksi ini ?');"
-                                    type="submit">BATAL</button>
+                                <button class="btn bg-danger card-btn" onclick="return confirm('Apakah anda yakin membatalkan transaksi ini ?');" type="submit">BATAL</button>
                             </form>
-                            <button class="btn bg-success card-btn" data-toggle="modal"
-                                data-target="#fullHeightModalRight">BAYAR</button>
+                            <button class="btn bg-success card-btn" data-toggle="modal" data-target="#fullHeightModalRight">BAYAR</button>
                         </div>
                     </li>
                 </ul>
@@ -130,8 +109,7 @@
         </div>
     </div>
 
-    <div class="modal fade right" id="fullHeightModalRight" role="dialog" aria-labelledby="myModalLabel"
-        aria-hidden="true">
+    <div class="modal fade right" id="fullHeightModalRight" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 
         <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
         <div class="modal-dialog modal-full-height modal-right" role="document">
@@ -174,8 +152,7 @@
 
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-info" data-dismiss="modal">Keluar</button>
-                    <button type="submit" class="btn btn-primary" id="saveButton" disabled
-                        onClick="openWindowReload(this)">Bayar</button>
+                    <button type="submit" class="btn btn-primary" id="saveButton" disabled onClick="openWindowReload(this)">Bayar</button>
                 </div>
                 </form>
             </div>
