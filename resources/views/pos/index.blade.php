@@ -9,7 +9,7 @@
                         POS
                     </div>
                     <div class="card-actions pe-1">
-                        <x-form :action="url('/transcation')" method="get">
+                        <x-form :action="url('/pos')" method="get">
                             <x-form-input name="search" placeholder="Cari produk" onblur="this.form.submit()" value="{{ request()->search }}" />
                         </x-form>
                     </div>
@@ -19,7 +19,7 @@
                         @foreach ($products as $product)
                         <div class="col-md-3 p-1 mt-0">
                             <x-form action="{{url('/transcation/addproduct', $product->id)}}" method="POST">
-                                <div class="card cursor-pointer card-product" onclick="this.closest('form').submit();return false;">
+                                <div class="card border-white shadow cursor-pointer card-product " onclick="this.closest('form').submit();return false;">
                                     <div class="card-body p-1" style="height: 65px">
                                         <div class="text-uppercase fw-bold">{{ $product->sku }}</div>
                                         {{ Str::limit($product->name, 45) }}
@@ -46,21 +46,21 @@
                 </div>
                 <div class="card-body overflow-auto" style="height:53vh">
                     @forelse($cart_data as $index=>$item)
-                    <div class="card mb-1">
+                    <div class="card mb-1 shadow-sm">
                         <div class="p-1">
                             {{ $item['name'] }}
                         </div>
-                        <div class="d-flex card-footer py-0 px-1">
+                        <div class="d-flex py-0 px-1">
                             <div class="flex-grow-1">
                                 <x-form action="{{url('/transcation/removeproduct',$item['rowId'])}}" method="POST" class="d-inline cursor-pointer">
-                                    <a onclick="this.closest('form').submit();return false;" title="Hapus item"> <i class="ti ti-trash-x text-red"></i></a>
+                                    <a onclick="this.closest('form').submit();return false;" title="Hapus item"><i class="ti ti-x text-white bg-red rounded-pill fw-bold"></i></a>
                                 </x-form>
                                 <x-form action="{{url('/transcation/updateCart', $item['rowId'])}}" method="POST" class="d-inline">
                                     <input name="qty" type="number" class="form-control py-0 px-1 d-inline" style="width:50px" value="{{$item['qty']}}" onblur="this.form.submit()">
                                 </x-form>
                                 x {{ angka($item['pricesingle']) }}
                             </div>
-                            <div class="-end fw-bold">
+                            <div class="text-end fw-bold">
                                 {{ rupiah($item['price']) }}
                             </div>
                         </div>
@@ -74,7 +74,7 @@
             </div>
 
             <div class="card mt-2 border-primary">
-                <ul class="list-group list-group-flush">
+                <ul class="list-group list-group-flush fw-bold">
                     <li class="list-group-item py-2">
                         <div class="d-flex justify-content-between">
                             <span> Diskon </span>
@@ -253,7 +253,7 @@
         }
 
         .card-product:hover {
-            border: 1px solid red !important;
+            border: 1px solid black!important;
         }
 
         /* Chrome, Safari, Edge, Opera */

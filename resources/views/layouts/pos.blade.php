@@ -148,35 +148,6 @@
             </div>
         </header>
         <div class="page-wrapper">
-            <div class="container-xl">
-                <!-- Page title -->
-                <div class="page-header d-print-none text-white">
-                    <div class="row g-2 align-items-center">
-                        <div class="col">
-                            <div class="page-pretitle mb-1">
-                                @isset ($breadcrumbs)
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                                    @foreach ($breadcrumbs as $breadcrumb)
-                                        @if (!$loop->last)
-                                            <li class="breadcrumb-item"><a href="{{ $breadcrumb['url'] }}">{{ $breadcrumb['title'] }}</a></li>
-                                        @else
-                                            <li class="breadcrumb-item active">{{ $breadcrumb['title'] }}</li>
-                                        @endif
-                                    @endforeach
-                                </ol>
-                                @endisset
-                            </div>
-                            <h2 class="page-title">
-                                @yield('title')
-                            </h2>
-                        </div>
-                        <!-- Page title actions -->
-                        <div class="col-12 col-md-auto ms-auto d-print-none">
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="page-body">
                 @yield('content')
             </div>
