@@ -9,12 +9,7 @@ function browser_agent($user_agent)
     return $agent->platform().' - '.$agent->browser();
 }
 
-function rupiah($value)
+function checkUuid($fieldUuid)
 {
-    return 'Rp '.number_format((int) $value, 0, ',', '.');
-}
-
-function angka($value)
-{
-    return number_format((int) $value, 0, ',', '.');
+    abort_if((request()->uuid != $fieldUuid), 404);
 }

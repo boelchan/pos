@@ -153,7 +153,7 @@
                 <div class="page-header d-print-none text-white">
                     <div class="row g-2 align-items-center">
                         <div class="col">
-                            <div class="mb-1">
+                            <div class="page-pretitle mb-1">
                                 @isset ($breadcrumbs)
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>

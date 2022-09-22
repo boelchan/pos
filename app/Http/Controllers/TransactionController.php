@@ -19,10 +19,6 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $breadcrumbs = [
-            ['url' => '', 'title' => 'Point of Sales'],
-        ];
-
         //product
         $products = Product::when(request('search'), function ($query) {
             return $query->where('name', 'like', '%'.request('search').'%');
@@ -88,7 +84,7 @@ class TransactionController extends Controller
         //kembangin jadi SPA make react.js atau vue.js (tapi bagusnya backend sama frontend dipisah | backend cuma sebagai penyedia token sama restfull api aja)
         //kalau make SPA kayaknya agak sulit deh krn ini package default nyimpan cartnya disession, tapi kalau gak salah didokumentasinya
         //bilang kalau ini package bisa store datanya di database
-        return view('pos.index', compact('products', 'cart_data', 'data_total', 'customers', 'breadcrumbs'));
+        return view('pos.index', compact('products', 'cart_data', 'data_total', 'customers'));
     }
 
     public function addProductCart($id)
