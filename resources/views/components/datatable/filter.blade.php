@@ -8,7 +8,7 @@
                 {!! $slot !!}
             </div>
         </div>
-        <div class="card-footer d-flex justify-content-center p-2">
+        <div class="card-footer d-flex justify-content-center p-1">
             <button class="btn btn-pill" type="button" 
                 data-bs-toggle="collapse"
                 data-bs-target="#collapse-datatable-filter" aria-expanded="false"

@@ -35,9 +35,9 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::post('/transcation/update-tanggal/', [TransactionController::class, 'updateTanggal'])->name('update.tanggal');
 });
 
-Route::middleware(['auth', 'role:superadmin|kasir'])->group(function () {
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::resource('customer', CustomerController::class);
-    Route::get('/transcation', [TransactionController::class, 'index'])->name('pos');
+    Route::get('/pos', [TransactionController::class, 'index'])->name('pos');
     Route::post('/transcation/addproduct/{id}', [TransactionController::class, 'addProductCart']);
     Route::post('/transcation/removeproduct/{id}', [TransactionController::class, 'removeProductCart']);
     Route::post('/transcation/clear', [TransactionController::class, 'clear']);

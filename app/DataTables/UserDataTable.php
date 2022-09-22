@@ -36,9 +36,9 @@ class UserDataTable extends DataTable
                 return $query->roles->first()->name;
             })
             ->editColumn('action', function ($query) {
-                return view('components.button.show', ['action' => route('user.show', $query->id)]).
-                    view('components.button.edit', ['action' => route('user.edit', $query->id)]).
-                    view('components.button.destroy', ['action' => route('user.destroy', $query->id), 'label' => $query->name, 'target' => 'user-table']);
+                return view('components.button.show', ['action' => route('user.show', [$query->id, 'uuid' => $query->uuid])]).
+                    view('components.button.edit', ['action' => route('user.edit', [$query->id, 'uuid' => $query->uuid])]).
+                    view('components.button.destroy', ['action' => route('user.destroy', [$query->id, 'uuid' => $query->uuid]), 'label' => $query->name, 'target' => 'user-table']);
             });
     }
 

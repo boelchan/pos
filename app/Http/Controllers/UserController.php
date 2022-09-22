@@ -14,18 +14,14 @@ class UserController extends Controller
     public function index(UserDataTable $datatable)
     {
         $roleOption = ['' => 'Semua'] + Role::orderBy('name')->pluck('name', 'id')->all();
-        $breadcrumbs = [
-            ['url' => '#', 'title' => 'Setting'], ['url' => '', 'title' => 'User'],
-        ];
+        $breadcrumbs = [['url' => '#', 'title' => 'Setting'], ['url' => '', 'title' => 'User']];
 
         return $datatable->render('user.index', compact('roleOption', 'breadcrumbs'));
     }
 
     public function create()
     {
-        $breadcrumbs = [
-            ['url' => '#', 'title' => 'Setting'], ['url' => route('user.index'), 'title' => 'User'], ['title' => 'Tambah User'],
-        ];
+        $breadcrumbs = [['url' => '#', 'title' => 'Setting'], ['url' => route('user.index'), 'title' => 'User'], ['title' => 'Tambah User']];
 
         $roleOption = Role::orderBy('name')->pluck('name', 'id')->all();
 
@@ -53,14 +49,18 @@ class UserController extends Controller
 
     public function show(User $user, AuthenticationLogDataTable $authenticationLogDataTable)
     {
-        return $authenticationLogDataTable->render('user.show', compact('user'));
+        checkUuid($user->uuid);
+
+        $breadcrumbs = [['url' => '#', 'title' => 'Setting'], ['url' => route('user.index'), 'title' => 'User'], ['title' => 'Detail '.$user->name]];
+
+        return $authenticationLogDataTable->render('user.show', compact('user', 'breadcrumbs'));
     }
 
     public function edit(User $user)
     {
-        $breadcrumbs = [
-            ['url' => '#', 'title' => 'Setting'], ['url' => route('user.index'), 'title' => 'User'], ['title' => 'Edit User '.$user->name],
-        ];
+        checkUuid($user->uuid);
+
+        $breadcrumbs = [['url' => '#', 'title' => 'Setting'], ['url' => route('user.index'), 'title' => 'User'], ['title' => 'Edit '.$user->name]];
 
         $roleOption = Role::orderBy('name')->pluck('name', 'id')->all();
 
@@ -94,6 +94,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        checkUuid($user->uuid);
+
         if ($user->isSuperadmin()) {
             return response()->json(['message' => 'Superadmin tidak dapat dihapus'], 400);
         }

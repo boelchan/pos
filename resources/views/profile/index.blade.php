@@ -71,12 +71,20 @@
                             </div>
                             <div class="tab-pane" id="tabs-riwayat">
                                 <div>
-                                    @foreach ($user->lastLogin as $l)
+                                    @forelse ($user->lastLogin as $l)
                                         <div class="alert alert-{{ $l->login_successful ? 'success' : 'danger' }}" role="alert">
-                                            <h4 class="alert-title">{{ $l->login_at->diffForHumans() }}</h4>
+                                            <h4 class="alert-title">
+                                                @if ($l->login_at)    
+                                                    {{ $l->login_at->diffForHumans() }}
+                                                @endif
+                                            </h4>
                                             <div class="text-muted">{{ browser_agent($l->user_agent) }} - {{ $l->login_at }}</div>
                                         </div>
-                                    @endforeach
+                                    @empty
+                                        <div class="alert alert-info" role="alert">
+                                            <div class="text-muted">Anda belum pernah login</div>
+                                        </div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>

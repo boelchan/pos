@@ -23,138 +23,138 @@
 
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables/datatables.min.css') }}" />
 
-    @stack('style')
-
 
 </head>
 
 <body class="">
     <div class="page">
-        <header class="navbar navbar-expand-md navbar-dark navbar-overlap d-print-none">
-            <div class="container-xl">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-                    <a href="/">
-                        <img src="{{ asset('static/logo-white.svg') }}" width="110" height="32" alt="Tabler" class="navbar-brand-image">
-                    </a>
-                </h1>
-                <div class="navbar-nav flex-row order-md-last">
-                    <div class="nav-item dropdown">
-                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                            <span class="avatar avatar-sm" style="background-image: url(/static/avatar/user-1.png)"></span>
-                            <div class="d-none d-xl-block ps-2">
-                                @if (Auth::check())
-                                    <div>{{ auth()->user()->name }}</div>
-                                    <div class="mt-1 small text-muted">{{ auth()->user()->getRoleNames()[0] }}</div>
-                                @endif
-                            </div>
+        <div class="sticky-top">
+            <header class="navbar navbar-expand-md navbar-light sticky-top d-print-none">
+                <div class="container-xl">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+                        <a href="/">
+                            <img src="{{ asset('static/logo.svg') }}" width="110" height="32" alt="Tabler" class="navbar-brand-image">
                         </a>
-                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            @if (Auth::check())
-                                <a href="{{ route('profile.index') }}" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                     </svg>&nbsp;
-                                    Pengaturan Akun
-                                </a>
-                                <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
-                                        <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
-                                     </svg>&nbsp;
-                                    Logout
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                    @csrf
-                                </form>
-                            @else
-                                <a href="/" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <polyline points="5 12 3 12 12 3 21 12 19 12"></polyline>
-                                        <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
-                                        <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"></path>
-                                     </svg> &nbsp;
-                                    Home </a>
-                                <a href="/login" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-login" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
-                                        <path d="M20 12h-13l3 -3m0 6l-3 -3"></path>
-                                     </svg> &nbsp;
-                                    Login</a>
-                                <a href="/register" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                        <circle cx="9" cy="7" r="4"></circle>
-                                        <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
-                                        <path d="M16 11h6m-3 -3v6"></path>
-                                     </svg> &nbsp;
-                                    Daftar </a>
-                            @endif
+                    </h1>
+                    <div class="navbar-nav flex-row order-md-last">
+                        <div class="nav-item dropdown">
+                            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                                <span class="avatar avatar-sm" style="background-image: url(/static/avatar/user-1.png)"></span>
+                                <div class="d-none d-xl-block ps-2">
+                                    @if (Auth::check())
+                                        <div>{{ auth()->user()->name }}</div>
+                                        <div class="mt-1 small text-muted">{{ auth()->user()->getRoleNames()[0] }}</div>
+                                    @endif
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                @if (Auth::check())
+                                    <a href="{{ route('profile.index') }}" class="dropdown-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>&nbsp;
+                                        Pengaturan Akun
+                                    </a>
+                                    <a href="#" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                                            <path d="M7 12h14l-3 -3m0 6l3 -3"></path>
+                                        </svg>&nbsp;
+                                        Logout
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                        @csrf
+                                    </form>
+                                @else
+                                    <a href="/" class="dropdown-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <polyline points="5 12 3 12 12 3 21 12 19 12"></polyline>
+                                            <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"></path>
+                                            <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"></path>
+                                        </svg> &nbsp;
+                                        Home </a>
+                                    <a href="/login" class="dropdown-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-login" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"></path>
+                                            <path d="M20 12h-13l3 -3m0 6l-3 -3"></path>
+                                        </svg> &nbsp;
+                                        Login</a>
+                                    <a href="/register" class="dropdown-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                            <circle cx="9" cy="7" r="4"></circle>
+                                            <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>
+                                            <path d="M16 11h6m-3 -3v6"></path>
+                                        </svg> &nbsp;
+                                        Daftar </a>
+                                @endif
 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbar-menu">
+                        <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+                            <ul class="navbar-nav">
+                                @foreach ($menuData as $m)                            
+                                    @if (Auth::check() && Auth::user()->hasRole($m->role))
+                                        <li class="nav-item @isset($m->sub) dropdown @endisset">
+                                            <a href="@if(isset($m->sub)) #navbar-base @else {{ url($m->url) }} @endif" 
+                                                class="nav-link @isset($m->sub) dropdown-toggle @endisset 
+                                                @if(isset($m->sub))
+                                                    @if (Str::startsWith(Route::currentRouteName(), collect($m->sub)->pluck('url')->all()))
+                                                        active
+                                                    @endif
+                                                @else
+                                                    {{ (Str::startsWith(Route::currentRouteName(), $m->url)) ? 'active' : '' }}
+                                                @endif
+                                                "
+                                                @isset($m->sub)
+                                                    data-bs-toggle="dropdown"
+                                                    data-bs-auto-close="outside" role="button" aria-expanded="false"
+                                                @endisset
+                                                >
+                                                <span class="d-md-none d-lg-inline-block me-1">
+                                                    <i class="ti ti-{{ $m->icon }}"></i>
+                                                </span>
+                                                <span class="nav-link-title">
+                                                    {{ $m->title }}
+                                                </span>
+                                            </a>
+                                            @isset($m->sub)
+                                                <div class="dropdown-menu">
+                                                    @foreach ($m->sub as $sub)
+                                                        @if (Auth::check() && Auth::user()->hasRole($sub->role))
+                                                            <a href="{{ url($sub->url) }}" class="dropdown-item {{ (Str::startsWith(Route::currentRouteName(), $sub->url)) ? 'active' : '' }}">
+                                                                {{ $sub->title }}
+                                                            </a>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endisset
+                                        </li>
+                                    @endif
+                                @endforeach
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div class="collapse navbar-collapse" id="navbar-menu">
-                    <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
-                        <ul class="navbar-nav">
-                            @foreach ($menuData as $m)                            
-                                @if (Auth::check() && Auth::user()->hasRole($m->role))
-                                    <li class="nav-item @isset($m->sub) dropdown @endisset">
-                                        <a href="@if(isset($m->sub)) #navbar-base @else {{ route($m->url) }} @endif" 
-                                            class="nav-link @isset($m->sub) dropdown-toggle @endisset 
-                                            @if(isset($m->sub))
-                                                @if (Str::startsWith(Route::currentRouteName(), collect($m->sub)->pluck('url')->all()))
-                                                    active
-                                                @endif
-                                            @else
-                                                {{ (Str::startsWith(Route::currentRouteName(), $m->url)) ? 'active' : '' }}
-                                            @endif
-                                            "
-                                            @isset($m->sub)
-                                                data-bs-toggle="dropdown"
-                                                data-bs-auto-close="outside" role="button" aria-expanded="false"
-                                            @endisset
-                                            >
-                                            <span class="d-md-none d-lg-inline-block me-1">
-                                                <i class="ti ti-{{ $m->icon }}"></i>
-                                            </span>
-                                            <span class="nav-link-title">
-                                                {{ $m->title }}
-                                            </span>
-                                        </a>
-                                        @isset($m->sub)
-                                            <div class="dropdown-menu">
-                                                @foreach ($m->sub as $sub)
-                                                    @if (Auth::check() && Auth::user()->hasRole($sub->role))
-                                                        <a href="{{ url($sub->url) }}" class="dropdown-item {{ (Str::startsWith(Route::currentRouteName(), $sub->url)) ? 'active' : '' }}">
-                                                            {{ $sub->title }}
-                                                        </a>
-                                                    @endif
-                                                @endforeach
-                                            </div>
-                                        @endisset
-                                    </li>
-                                @endif
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </header>
+            </header>
+        </div>
         <div class="page-wrapper">
             <div class="container-xl">
                 <!-- Page title -->
                 <div class="page-header d-print-none text-white">
                     <div class="row g-2 align-items-center">
                         <div class="col">
-                            <div class="mb-1">
+                            <div class="page-pretitle mb-1">
                                 @isset ($breadcrumbs)
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
@@ -168,7 +168,7 @@
                                 </ol>
                                 @endisset
                             </div>
-                            <h2 class="page-title">
+                            <h2 class="page-title text-dark">
                                 @yield('title')
                             </h2>
                         </div>
