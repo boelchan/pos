@@ -106,4 +106,21 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Data sedang digunakan'], 400);
     }
+
+    public function banned(User $user, $status)
+    {
+        checkUuid($user->uuid);
+
+        if ($status == 'banned') {
+            $user->banned();
+            $message = 'Data berhasil dinonaktifkan';
+        }
+
+        if ($status == 'unbanned') {
+            $user->unBanned();
+            $message = 'Data berhasil diaktifkan';
+        }
+
+        return response()->json(['success' => true, 'message' => $message, 'redirect' => route('user.index')]);
+    }
 }

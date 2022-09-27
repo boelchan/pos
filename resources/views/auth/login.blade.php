@@ -5,9 +5,23 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+                <div class="card-header">
+                    Login
+                    <div class="card-actions">
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="btn">Daftar</a>
+                        @endif
+                    </div>
+                </div>
 
                 <div class="card-body">
+                    
+                    @if (session('error'))
+                        <div class="alert alert-important alert-danger ">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                    
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 

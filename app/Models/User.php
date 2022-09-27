@@ -30,6 +30,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'banned_at',
     ];
 
     /**
@@ -95,5 +96,22 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isSuperadmin()
     {
         return $this->hasRole('superadmin') ? true : false;
+    }
+
+    public function banned()
+    {
+        $this->banned_at = now();
+        $this->save();
+    }
+
+    public function unBanned()
+    {
+        $this->banned_at = null;
+        $this->save();
+    }
+
+    public function isBanned()
+    {
+        return ($this->banned_at) ? true : false;
     }
 }

@@ -23,23 +23,35 @@ class UserDataTable extends DataTable
                 if (request()->role) {
                     $query->where('role_id', request()->role);
                 }
+                if (request()->status) {
+                    if (request()->status == 'aktif') {
+                        $query->whereNull('banned_at');
+                    }
+                    if (request()->status == 'tidakAktif') {
+                        $query->whereNotNull('banned_at');
+                    }
+                }
             });
         }
 
         return $dataTable->editColumn('created_at', function ($query) {
             return $query->created_at;
         })
+            ->editColumn('role', function ($query) {
+                return $query->roles->first()->name;
+            })
             ->editColumn('email_verified_at', function ($query) {
                 return $query->email_verified_at;
             })
-            ->editColumn('role', function ($query) {
-                return $query->roles->first()->name;
+            ->editColumn('banned_at', function ($query) {
+                return $query->banned_at ? '<span class="badge bg-pink">Tidak Aktif</span>' : '<span class="badge bg-green">Aktif</span>';
             })
             ->editColumn('action', function ($query) {
                 return view('components.button.show', ['action' => route('user.show', [$query->id, 'uuid' => $query->uuid])]).
                     view('components.button.edit', ['action' => route('user.edit', [$query->id, 'uuid' => $query->uuid])]).
                     view('components.button.destroy', ['action' => route('user.destroy', [$query->id, 'uuid' => $query->uuid]), 'label' => $query->name, 'target' => 'user-table']);
-            });
+            })
+            ->rawColumns(['banned_at', 'action']);
     }
 
     public function query(User $model)
@@ -58,6 +70,7 @@ class UserDataTable extends DataTable
                     d.email = $("#email").val(); 
                     d.name = $("#name").val();
                     d.role = $("#role").val();
+                    d.status = $("#status").val();
                 }',
             ])
             ->drawCallback("function( settings ) { $(document).find('[data-toggle=\"tooltip\"]').tooltip(); }")
@@ -72,8 +85,9 @@ class UserDataTable extends DataTable
             Column::make('name'),
             Column::make('email'),
             Column::computed('role'),
-            Column::make('created_at'),
-            Column::make('email_verified_at'),
+            Column::make('created_at')->title('Tanggal Daftar'),
+            Column::make('email_verified_at')->title('Tanggal verifikasi'),
+            Column::computed('banned_at')->title('Status'),
             Column::computed('action')->addClass('text-center'),
         ];
     }

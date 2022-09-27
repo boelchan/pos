@@ -23,7 +23,8 @@ Route::middleware(['verified'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
-    Route::post('user/{user}/change-password/', [UserController::class, 'changePassword'])->name('user.change-password');
+    Route::post('user/{user}/change-password', [UserController::class, 'changePassword'])->name('user.change-password');
+    Route::post('user/{user}/{status}/banned', [UserController::class, 'banned'])->name('user.banned');
     Route::resource('user', UserController::class);
 });
 // akun

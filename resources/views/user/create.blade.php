@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'User')
+@section('sub-title', 'Tambah')
 
 @section('content')
 <div class="container-xl">

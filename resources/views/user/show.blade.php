@@ -9,41 +9,40 @@
         <div class="row row-cards">
             <div class="col-md-6 col-lg-3">
                 <div class="card border-primary">
-                    <div class="card-body p-4 text-center">
+                    <div class="card-body p-3 text-center">
                         <span class="avatar avatar-xl mb-3 avatar-rounded bg-indigo">{{ $user->acronym }}</span>
                         <h3 class="m-0 mb-1"><a href="#">{{ $user->name }}</a></h3>
                         <div class="text-muted">{{ $user->email }}</div>
-                        <div class="mt-3">
+                        <div class="mt-2">
                             <span class="badge bg-indigo-lt">{{ Str::upper($user->roles->first()->name) }}</span>
                         </div>
                     </div>
-                    <div class="d-flex">
-                        <a href="javascript:void(0)" class="card-btn delete-user" data-url="{{ route('user.destroy', $user->id) }}"
-                            data-token="{{ csrf_token() }}" data-label="{{ $user->name }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash"
-                                width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <line x1="4" y1="7" x2="20" y2="7"></line>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"></path>
-                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"></path>
-                            </svg>&nbsp;
-                            Hapus
+                    @if ($user->isBanned())
+                    <div class="ribbon bg-red"> Akun Diblokir </div>
+                    @else
+                    <div class="ribbon bg-success"> Aktif </div>
+                    @endif
+                    <div class="d-flex ">
+                        <a href="{{ route('user.edit', [$user->id, 'uuid' => $user->uuid]) }}" class="card-btn p-2 text-success">
+                            <i class="ti ti-edit fs-2 me-1"></i> Edit
                         </a>
-                        <a href="{{ route('user.edit', $user->id) }}" class="card-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20"
-                                height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <desc>Download more icon variants from https://tabler-icons.io/i/edit</desc>
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
-                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
-                                <path d="M16 5l3 3"></path>
-                            </svg>&nbsp;
-                            Edit
+                        <a href="javascript:void(0)" class="card-btn p-2 delete-user text-red" data-url="{{ route('user.destroy', [$user->id, 'uuid' => $user->uuid]) }}" data-token="{{ csrf_token() }}" data-label="{{ $user->name }}">
+                            <i class="ti ti-trash fs-2 me-1"></i> Hapus
                         </a>
+
+                        @if (auth()->user()->hasRole('superadmin'))
+                            @if (!$user->hasRole('superadmin'))
+                                @if ($user->isBanned())
+                                    <a href="javascript:void(0)" class="card-btn p-2 block-user bg-red" data-url="{{ route('user.banned', [$user->id, 'unbanned','uuid' => $user->uuid]) }}" data-token="{{ csrf_token() }}" data-label="Aktifkan {{ $user->name }}">
+                                        <i class="ti ti-x fs-2 me-1"></i> Aktifkan
+                                    </a>
+                                @else
+                                    <a href="javascript:void(0)" class="card-btn p-2 block-user bg-warning" data-url="{{ route('user.banned', [$user->id, 'banned','uuid' => $user->uuid]) }}" data-token="{{ csrf_token() }}" data-label="Blokir {{ $user->name }}">
+                                        <i class="ti ti-x fs-2 me-1"></i> Blokir
+                                    </a>
+                                @endif
+                            @endif
+                        @endif
                     </div>
                 </div>
             </div>
