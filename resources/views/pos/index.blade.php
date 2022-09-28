@@ -18,11 +18,11 @@
                     <div class="row row-cards pt-2">
                         @foreach ($products as $product)
                         <div class="col-md-3 p-1 mt-0">
-                            <x-form action="{{url('/transcation/addproduct', $product->id)}}" method="POST">
-                                <div class="card border-white shadow cursor-pointer card-product " onclick="this.closest('form').submit();return false;">
+                            <x-form action="{{url('/transcation/addproduct', $product->id)}}">
+                                <div class="card cursor-pointer card-product" onclick="this.closest('form').submit();return false;">
                                     <div class="card-body p-1" style="height: 65px">
                                         <div class="text-uppercase fw-bold">{{ $product->sku }}</div>
-                                        {{ Str::limit($product->name, 45) }}
+                                        {{ Str::limit($product->name, 60) }}
                                     </div>
                                     <div class="card-footer py-0 px-1 text-end fw-bold">
                                         {{ rupiah($product->price) }}
@@ -51,14 +51,28 @@
                             {{ $item['name'] }}
                         </div>
                         <div class="d-flex py-0 px-1">
-                            <div class="flex-grow-1">
-                                <x-form action="{{url('/transcation/removeproduct',$item['rowId'])}}" method="POST" class="d-inline cursor-pointer">
+                            <div>
+                                <x-form action="{{url('/transcation/removeproduct',$item['rowId'])}}" class="d-inline cursor-pointer me-1">
                                     <a onclick="this.closest('form').submit();return false;" title="Hapus item"><i class="ti ti-x text-white bg-red rounded-pill fw-bold"></i></a>
                                 </x-form>
-                                <x-form action="{{url('/transcation/updateCart', $item['rowId'])}}" method="POST" class="d-inline">
-                                    <input name="qty" type="number" class="form-control py-0 px-1 d-inline" style="width:50px" value="{{$item['qty']}}" onblur="this.form.submit()">
+                            </div>
+                            <div class="d-flex me-1 border rounded-pill border-success">
+                                <span class="p-0">
+                                    <x-form action="{{url('/transcation/decreasecart', $item['rowId'])}}" class="cursor-pointer">
+                                        <a onclick="this.closest('form').submit();return false;" title="kurang"><i class="ti ti-minus fs-3 fw-bold"></i></a>
+                                    </x-form>
+                                </span>
+                                <x-form action="{{url('/transcation/updateCart', $item['rowId'])}}">
+                                    <input name="qty" type="text" class="form-control text-center p-0 border-0" style="width:40px" value="{{$item['qty']}}" onblur="this.form.submit()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                                 </x-form>
-                                x {{ angka($item['pricesingle']) }}
+                                <span class="p-0">
+                                    <x-form action="{{url('/transcation/increasecart', $item['rowId'])}}" method="POST" class="cursor-pointer">
+                                        <a onclick="this.closest('form').submit();return false;" title="tambah"><i class="ti ti-plus fs-3 fw-bold"></i></a>
+                                    </x-form>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1">
+                                {{ angka($item['pricesingle']) }}
                             </div>
                             <div class="text-end fw-bold">
                                 {{ rupiah($item['price']) }}
@@ -78,9 +92,9 @@
                     <li class="list-group-item py-2">
                         <div class="d-flex justify-content-between">
                             <span> Diskon </span>
-                            <form action="{{ url('/transcation') }}" method="get">
+                            <x-form action="{{ url('/transcation') }}" method="get">
                                 <input type="number" class="form-control text-end pe-3 py-0" name="discount" value="{{ $data_total['discount'] }}" onchange="this.form.submit()">
-                            </form>
+                            </x-form>
                         </div>
                     </li>
                     <li class="list-group-item py-2">
@@ -97,10 +111,9 @@
                     </li>
                     <li class="list-group-item p-0">
                         <div class="d-flex">
-                            <form action="{{ url('/transcation/clear') }}" method="POST">
-                                @csrf
+                            <x-form action="{{ url('/transcation/clear') }}">
                                 <button class="btn bg-danger card-btn" onclick="return confirm('Apakah anda yakin membatalkan transaksi ini ?');" type="submit">BATAL</button>
-                            </form>
+                            </x-form>
                             <button class="btn bg-success card-btn" data-toggle="modal" data-target="#fullHeightModalRight">BAYAR</button>
                         </div>
                     </li>
@@ -124,9 +137,7 @@
                 </div>
                 <div class="modal-body">
 
-                    <form action="{{ url('/transcation/bayar') }}" method="POST">
-                        @csrf
-
+                    <x-form action="{{ url('/transcation/bayar') }}">
                         <div class="form-group">
                             <label for="oke">Member</label>
                             <select name="customer_id" id="" class="form-control" style="font-size: 13px">
@@ -253,7 +264,7 @@
         }
 
         .card-product:hover {
-            border: 1px solid black!important;
+            border: 1px solid black !important;
         }
 
         /* Chrome, Safari, Edge, Opera */
