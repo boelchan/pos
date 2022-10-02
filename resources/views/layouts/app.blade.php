@@ -14,11 +14,10 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    {{-- icon --}}
-    <link rel="stylesheet" href="https://unpkg.com/@tabler/icons@latest/iconfont/tabler-icons.min.css">
     <!-- Styles -->
     <link href="{{ asset('dist/css/tabler.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('dist/css/tabler-vendors.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('dist/css/tabler-icons.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('dist/css/demo.min.css') }}" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/datatables/datatables.min.css') }}" />
