@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -38,12 +39,17 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
 
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::resource('customer', CustomerController::class);
-    Route::get('/pos', [TransactionController::class, 'index'])->name('pos');
-    Route::post('/transcation/addproduct/{id}', [TransactionController::class, 'addProductCart']);
-    Route::post('/transcation/removeproduct/{id}', [TransactionController::class, 'removeProductCart']);
-    Route::post('/transcation/clear', [TransactionController::class, 'clear']);
-    Route::post('/transcation/updateCart/{id}', [TransactionController::class, 'updateCart']);
-    Route::post('/transcation/bayar', [TransactionController::class, 'bayar']);
+    Route::prefix('cart')->as('cart.')->group(function () {
+        Route::get('/', [TransactionController::class, 'index'])->name('index');
+        Route::post('add/{id}', [TransactionController::class, 'add'])->name('add');
+        Route::post('remove/{id}', [TransactionController::class, 'remove'])->name('remove');
+        Route::post('increase/{id}', [TransactionController::class, 'increase'])->name('increase');
+        Route::post('decrease/{id}', [TransactionController::class, 'decrease'])->name('decrease');
+        Route::post('clear', [TransactionController::class, 'clear'])->name('clear');
+        Route::post('update/{id}', [TransactionController::class, 'update'])->name('update');
+        Route::post('bayar', [TransactionController::class, 'bayar'])->name('bayar');
+    });
+
     Route::get('/transcation/laporan/{id}', [TransactionController::class, 'laporan'])->name('laporan');
     Route::get('/transcation/cetak/laporan/{id}', [TransactionController::class, 'cetakLaporan'])->name('cetak.laporan');
 });

@@ -8,9 +8,17 @@
         ]
     },
     {
-        "title": "POS",
+        "title": "Kasir",
         "icon": "shopping-cart",
-        "url": "pos",
+        "url": "cart",
+        "role": [
+            "superadmin"
+        ]
+    },
+    {
+        "title": "Transaksi",
+        "icon": "list-check",
+        "url": "transcation/history",
         "role": [
             "superadmin"
         ]

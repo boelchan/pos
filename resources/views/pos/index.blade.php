@@ -1,4 +1,5 @@
 @extends('layouts.pos')
+@section('title', 'Kasir')
 @section('content')
 <div class="container-xl">
     <div class="row row-cards">
@@ -9,7 +10,7 @@
                         POS
                     </div>
                     <div class="card-actions pe-1">
-                        <x-form :action="url('/pos')" method="get">
+                        <x-form :action="route('cart.index')" method="get">
                             <x-form-input name="search" placeholder="Cari produk" onblur="this.form.submit()" value="{{ request()->search }}" />
                         </x-form>
                     </div>
@@ -18,14 +19,17 @@
                     <div class="row row-cards pt-2">
                         @foreach ($products as $product)
                         <div class="col-md-3 p-1 mt-0">
-                            <x-form action="{{url('/transcation/addproduct', $product->id)}}">
-                                <div class="card cursor-pointer card-product" onclick="this.closest('form').submit();return false;">
+                            <x-form action="{{ route('cart.add', $product->id) }}">
+                                <div class="card cursor-pointer card-product shadow-sm" onclick="this.closest('form').submit();return false;">
                                     <div class="card-body p-1" style="height: 65px">
                                         <div class="text-uppercase fw-bold">{{ $product->sku }}</div>
                                         {{ Str::limit($product->name, 60) }}
                                     </div>
-                                    <div class="card-footer py-0 px-1 text-end fw-bold">
-                                        {{ rupiah($product->price) }}
+                                    <div class="card-footer py-0 px-1">
+                                        <div class="d-flex justify-content-between">
+                                            <div> {{ angka($product->qty) }} </div>
+                                            <div class="fw-bold"> {{ rupiah($product->price) }} </div>
+                                        </div>
                                     </div>
                                 </div>
                             </x-form>
@@ -46,27 +50,27 @@
                 </div>
                 <div class="card-body overflow-auto" style="height:53vh">
                     @forelse($cart_data as $index=>$item)
-                    <div class="card mb-1 shadow-sm">
-                        <div class="p-1">
+                    <div class="card mb-1 shadow-sm p-1">
+                        <div class="px-1">
                             {{ $item['name'] }}
                         </div>
                         <div class="d-flex py-0 px-1">
                             <div>
-                                <x-form action="{{url('/transcation/removeproduct',$item['rowId'])}}" class="d-inline cursor-pointer me-1">
-                                    <a onclick="this.closest('form').submit();return false;" title="Hapus item"><i class="ti ti-x text-white bg-red rounded-pill fw-bold"></i></a>
+                                <x-form action="{{ route('cart.remove',$item['rowId'])}}" class="d-inline cursor-pointer">
+                                    <a onclick="this.closest('form').submit();return false;" title="Hapus item"><i class="ti ti-x text-red rounded-pill fw-bold fs-2"></i></a>
                                 </x-form>
                             </div>
-                            <div class="d-flex me-1 border rounded-pill border-success">
+                            <div class="d-flex me-1 border rounded shadow-lg">
                                 <span class="p-0">
-                                    <x-form action="{{url('/transcation/decreasecart', $item['rowId'])}}" class="cursor-pointer">
+                                    <x-form action="{{ route('cart.decrease', $item['rowId'])}}" class="cursor-pointer">
                                         <a onclick="this.closest('form').submit();return false;" title="kurang"><i class="ti ti-minus fs-3 fw-bold"></i></a>
                                     </x-form>
                                 </span>
-                                <x-form action="{{url('/transcation/updateCart', $item['rowId'])}}">
-                                    <input name="qty" type="text" class="form-control text-center p-0 border-0" style="width:40px" value="{{$item['qty']}}" onblur="this.form.submit()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+                                <x-form action="{{ route('cart.update', $item['rowId'])}}">
+                                    <input name="qty" type="text" class="form-control text-center text-black p-0 border-0" style="width:30px" value="{{ $item['qty'] }}" onblur="this.form.submit()" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
                                 </x-form>
                                 <span class="p-0">
-                                    <x-form action="{{url('/transcation/increasecart', $item['rowId'])}}" method="POST" class="cursor-pointer">
+                                    <x-form action="{{ route('cart.increase', $item['rowId'])}}" method="POST" class="cursor-pointer">
                                         <a onclick="this.closest('form').submit();return false;" title="tambah"><i class="ti ti-plus fs-3 fw-bold"></i></a>
                                     </x-form>
                                 </span>
@@ -81,7 +85,7 @@
                     </div>
                     @empty
                     <div class="row">
-                        <span class="text-center">Empty Cart</span>
+                        <span class="text-center">Kosong</span>
                     </div>
                     @endforelse
                 </div>
@@ -90,10 +94,15 @@
             <div class="card mt-2 border-primary">
                 <ul class="list-group list-group-flush fw-bold">
                     <li class="list-group-item py-2">
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between ">
                             <span> Diskon </span>
-                            <x-form action="{{ url('/transcation') }}" method="get">
-                                <input type="number" class="form-control text-end pe-3 py-0" name="discount" value="{{ $data_total['discount'] }}" onchange="this.form.submit()">
+                            <x-form action="{{  route('cart.index') }}" method="get">
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        Rp
+                                    </span>
+                                    <input type="number" class="form-control text-end pe-3 py-1" name="discount" value="{{ $data_total['discount'] }}" onchange="this.form.submit()">
+                                </div>
                             </x-form>
                         </div>
                     </li>
@@ -111,10 +120,10 @@
                     </li>
                     <li class="list-group-item p-0">
                         <div class="d-flex">
-                            <x-form action="{{ url('/transcation/clear') }}">
+                            <x-form action="{{  route('cart.clear') }}">
                                 <button class="btn bg-danger card-btn" onclick="return confirm('Apakah anda yakin membatalkan transaksi ini ?');" type="submit">BATAL</button>
                             </x-form>
-                            <button class="btn bg-success card-btn" data-toggle="modal" data-target="#fullHeightModalRight">BAYAR</button>
+                            <button class="btn bg-success card-btn" data-bs-toggle="offcanvas" data-bs-target="#modalBayar">BAYAR</button>
                         </div>
                     </li>
                 </ul>
@@ -122,161 +131,130 @@
         </div>
     </div>
 
-    <div class="modal fade right" id="fullHeightModalRight" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-
-        <!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
-        <div class="modal-dialog modal-full-height modal-right" role="document">
-
-            <!-- Sorry campur2 bahasa indonesia sama inggris krn kebiasaan make b.inggris eh ternyata buat aplikasi buat indonesia jadi gini deh  -->
-            <div class="modal-content">
-                <div class="modal-header indigo">
-                    <h6 class="modal-title w-100 text-light" id="myModalLabel">Billing Information</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+    <div class="offcanvas offcanvas-end" id="modalBayar">
+        <div class="offcanvas-header">
+            <h1 class="offcanvas-title">Billing Information</h1>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <x-form action="{{ route('cart.bayar') }}">
                 <div class="modal-body">
+                    <x-form-select name="customer_id" :options="$customers" label="Pelanggan" floating class="mb-2" />
 
-                    <x-form action="{{ url('/transcation/bayar') }}">
-                        <div class="form-group">
-                            <label for="oke">Member</label>
-                            <select name="customer_id" id="" class="form-control" style="font-size: 13px">
-                                @foreach ( $customers as $k => $v)
-                                <option value="{{ $k }}">{{ $v }}</option>
-                                @endforeach
-                            </select>
+                    <div class="card mb-2">
+                        <div class="card-footer p-2">
+                            Total
                         </div>
-                        <div class="form-group">
-                            <label for="oke">Input Nominal</label>
-                            <input id="oke" class="form-control" type="number" name="bayar" autofocus />
+                        <div class="card-body p-2 text-center">
+                            <label class="fw-bold fs-1">{{ angka($data_total['total']) }}</label>
+                            <input id="totalHidden" type="hidden" name="totalHidden" value="{{ $data_total['total'] }}" />
                         </div>
-                        <h3 class="font-weight-bold">Total:</h3>
-                        <h1 class="font-weight-bold mb-5">Rp. {{ $data_total['total'] }}</h1>
-                        <input id="totalHidden" type="hidden" name="totalHidden" value="{{$data_total['total']}}" />
-
-                        <h3 class="font-weight-bold">Bayar:</h3>
-                        <h1 class="font-weight-bold mb-5" id="pembayaran"></h1>
-
-                        <h3 class="font-weight-bold text-primary">Kembalian:</h3>
-                        <h1 class="font-weight-bold text-primary" id="kembalian"></h1>
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-footer p-2">
+                            Bayar
+                        </div>
+                        <div class="card-body p-2 text-center mb-1">
+                            <x-form-input name="bayar" type="number" id="oke" autofocus class="fs-2 px-1 py-0 text-center" />
+                        </div>
+                    </div>
+                    <div class="card mb-2">
+                        <div class="card-footer p-2">
+                            Kembalian
+                        </div>
+                        <div class="card-body p-2 text-center">
+                            <label class="fw-bold fs-1" id="kembalian">-</label>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-info" data-dismiss="modal">Keluar</button>
-                    <button type="submit" class="btn btn-primary" id="saveButton" disabled onClick="openWindowReload(this)">Bayar</button>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-lg btn-success w-100" id="saveButton" disabled onClick="openWindowReload(this)">Bayar</button>
                 </div>
-                </form>
-            </div>
+            </x-form>
         </div>
     </div>
-    @endsection
-    <!-- Ini error harusnya bisa dinamis ambil value dari controller tp agar cepet ya biar aja gini silahkan modifikasi  -->
-    @push('script')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-    @if(Session::has('error'))
-    <script>
-        toastr.error(
-            'Telah mencapai jumlah maximum Product | Silahkan tambah stock Product terlebih dahulu untuk menambahkan'
-        )
 
-    </script>
-    @endif
+</div>
+@endsection
 
-    @if(Session::has('errorTransaksi'))
-    <script>
-        toastr.error(
-            'Transaksi tidak valid | perhatikan jumlah pembayaran | cek jumlah product'
-        )
-
-    </script>
-    @endif
-
-    @if(Session::has('success'))
-    <script>
-        toastr.success(
-            'Transaksi berhasil'
-        )
-    </script>
-    @endif
-
-    <script>
-        $(document).ready(function () {
-            $('#fullHeightModalRight').on('shown.bs.modal', function () {
-                $('#oke').trigger('focus');
-            });
+@push('script')
+<script>
+    $(document).ready(function () {
+        $('#modalBayar').on('shown', function () {
+            console.log('adas');
+            $('#oke').trigger('focus');
         });
+    });
 
-        oke.oninput = function () {
-            let jumlah = parseInt(document.getElementById('totalHidden').value) ? parseInt(document.getElementById('totalHidden').value) : 0;
-            let bayar = parseInt(document.getElementById('oke').value) ? parseInt(document.getElementById('oke').value) : 0;
-            let hasil = bayar - jumlah;
-            document.getElementById("pembayaran").innerHTML = bayar ? 'Rp ' + rupiah(bayar) + ',00' : 'Rp ' + 0 +
-                ',00';
-            document.getElementById("kembalian").innerHTML = hasil ? 'Rp ' + rupiah(hasil) + ',00' : 'Rp ' + 0 +
-                ',00';
+    oke.oninput = function () {
+        let jumlah = parseInt(document.getElementById('totalHidden').value) ? parseInt(document.getElementById('totalHidden').value) : 0;
+        let bayar = parseInt(document.getElementById('oke').value) ? parseInt(document.getElementById('oke').value) : 0;
+        let hasil = bayar - jumlah;
 
-            cek(bayar, jumlah);
-            const saveButton = document.getElementById("saveButton");   
+        document.getElementById("kembalian").innerHTML = hasil ? (hasil) : 'Rp 0';
 
-            if(jumlah === 0){
-                saveButton.disabled = true;
-            }
+        cek(bayar, jumlah);
+        const saveButton = document.getElementById("saveButton");   
 
-        };
-
-        function cek(bayar, jumlah) {
-            const saveButton = document.getElementById("saveButton");   
-
-            if (bayar < jumlah) {
-                saveButton.disabled = true;
-            } else {
-                saveButton.disabled = false;
-            }
+        if(jumlah === 0){
+            saveButton.disabled = true;
         }
 
-        function rupiah(bilangan) {
-            var number_string = bilangan.toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{1,3}/gi);
+    };
 
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-            return rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    function cek(bayar, jumlah) {
+        const saveButton = document.getElementById("saveButton");   
+
+        if (bayar < jumlah) {
+            saveButton.disabled = true;
+        } else {
+            saveButton.disabled = false;
         }
+    }
 
-    </script>
+    function rupiah(bilangan) {
+        var number_string = bilangan.toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{1,3}/gi);
 
-    @endpush
-
-    @push('style')
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
-    <style>
-        @media only screen and (max-width: 600px) {
-            .gambar {
-                width: 100%;
-                height: 100%;
-                padding: 0.9rem 0.9rem
-            }
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
         }
+        return rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    }
 
-        .card-product:hover {
-            border: 1px solid black !important;
-        }
+</script>
 
-        /* Chrome, Safari, Edge, Opera */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
+@endpush
 
-        /* Firefox */
-        input[type=number] {
-            -moz-appearance: textfield;
+@push('style')
+<style>
+    @media only screen and (max-width: 600px) {
+        .gambar {
+            width: 100%;
+            height: 100%;
+            padding: 0.9rem 0.9rem
         }
-    </style>
-    @endpush
+    }
+
+    .card-product:hover {
+        border: 1px solid black !important;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+@endpush

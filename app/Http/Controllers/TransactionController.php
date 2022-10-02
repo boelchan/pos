@@ -8,13 +8,11 @@ use App\Models\Product;
 use App\Models\ProductTranscation;
 use App\Models\Transcation;
 use Auth;
-use Barryvdh\DomPDF\PDF;
-use Darryldecode\Cart\Cart;
+use Darryldecode\Cart\CartCondition;
 use DB;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-
 class TransactionController extends Controller
 {
     public function index()
@@ -33,7 +31,7 @@ class TransactionController extends Controller
             $discount = 0;
         }
 
-        $condition = new \Darryldecode\Cart\CartCondition([
+        $condition = new CartCondition([
             'name' => 'diskon',
             'type' => 'tax', //tipenya apa
             'target' => 'total', //target kondisi ini apply ke mana (total, subtotal)
@@ -41,9 +39,9 @@ class TransactionController extends Controller
             'order' => 1,
         ]);
 
-        \Cart::session(Auth()->id())->condition($condition);
+        \Cart::session(auth()->id())->condition($condition);
 
-        $items = \Cart::session(Auth()->id())->getContent();
+        $items = \Cart::session(auth()->id())->getContent();
 
         if (\Cart::isEmpty()) {
             $cart_data = [];
@@ -62,48 +60,42 @@ class TransactionController extends Controller
             $cart_data = collect($cart)->sortBy('created_at');
         }
 
-        //total
-        $sub_total = \Cart::session(Auth()->id())->getSubTotal();
-        $total = \Cart::session(Auth()->id())->getTotal();
-
-        $new_condition = \Cart::session(Auth()->id())->getCondition('diskon');
+        $sub_total = \Cart::session(auth()->id())->getSubTotal();
+        // diskon
+        $new_condition = \Cart::session(auth()->id())->getCondition('diskon');
         $discount = $new_condition->getCalculatedValue($sub_total);
 
+        //total
+        $total = \Cart::session(auth()->id())->getTotal();
+
         $data_total = [
-            'sub_total' => $sub_total,
             'discount' => $discount,
+            'sub_total' => $sub_total,
             'total' => $total,
         ];
 
-        $customers = Customer::pluck('nama', 'id')->all();
+        $customers = Customer::orderBy('nama', 'asc')->pluck('nama', 'id')->all();
 
-        //kembangin biar no reload make ajax
-        //saran bagi yg mau kembangin bisa pake jquery atau .js native untuk manggil ajax jangan lupa product, cart item dan total dipisah
-        //btw saya lg mager bikin beginian.. jadi sayas serahkan sama kalian ya (yang penting konsep dan fungsi aplikasi dah kelar 100%)
-
-        //kembangin jadi SPA make react.js atau vue.js (tapi bagusnya backend sama frontend dipisah | backend cuma sebagai penyedia token sama restfull api aja)
-        //kalau make SPA kayaknya agak sulit deh krn ini package default nyimpan cartnya disession, tapi kalau gak salah didokumentasinya
-        //bilang kalau ini package bisa store datanya di database
         return view('pos.index', compact('products', 'cart_data', 'data_total', 'customers'));
     }
 
-    public function addProductCart($id)
+    public function add($id)
     {
         $product = Product::findOrfail($id);
 
-        $cart = \Cart::session(Auth()->id())->getContent();
+        $cart = \Cart::session(auth()->id())->getContent();
         $cek_itemId = $cart->whereIn('id', $id);
 
         if ($cek_itemId->isNotEmpty()) {
             if ($product->qty == $cek_itemId[$id]->quantity) {
                 return redirect()->back()->with('error', 'jumlah item kurang');
             } else {
-                \Cart::session(Auth()->id())->update($id, [
+                \Cart::session(auth()->id())->update($id, [
                     'quantity' => 1,
                 ]);
             }
         } else {
-            \Cart::session(Auth()->id())->add([
+            \Cart::session(auth()->id())->add([
                 'id' => $id,
                 'name' => $product->sku.' - '.$product->name,
                 'price' => $product->price,
@@ -117,28 +109,98 @@ class TransactionController extends Controller
         return redirect()->back();
     }
 
-    public function removeProductCart($id)
+    public function update($id, Request $request)
     {
-        \Cart::session(Auth()->id())->remove($id);
+        $product = Product::find($id);
+
+        $cart = \Cart::session(auth()->id())->getContent();
+        $cek_itemId = $cart->whereIn('id', $id);
+
+        if ($product->qty == $cek_itemId[$id]->quantity) {
+            return redirect()->back()->with('error', 'jumlah item kurang');
+        } else {
+            \Cart::session(auth()->id())->update($id, [
+                'quantity' => [
+                    'relative' => false,
+                    'value' => $request->qty,
+                ],
+            ]);
+
+            return redirect()->back();
+        }
+    }
+
+    public function decrease($id)
+    {
+        $product = Product::find($id);
+
+        $cart = \Cart::session(auth()->id())->getContent();
+        $cek_itemId = $cart->whereIn('id', $id);
+
+        if ($cek_itemId[$id]->quantity == 1) {
+            \Cart::session(auth()->id())->remove($id);
+        } else {
+            \Cart::session(auth()->id())->update($id, [
+                'quantity' => [
+                    'relative' => true,
+                    'value' => -1,
+                ],
+            ]);
+        }
+
+        return redirect()->back();
+    }
+
+    public function increase($id)
+    {
+        $product = Product::find($id);
+
+        $cart = \Cart::session(auth()->id())->getContent();
+        $cek_itemId = $cart->whereIn('id', $id);
+
+        if ($product->qty == $cek_itemId[$id]->quantity) {
+            return redirect()->back()->with('error', 'jumlah item kurang');
+        } else {
+            \Cart::session(auth()->id())->update($id, [
+                'quantity' => [
+                    'relative' => true,
+                    'value' => 1,
+                ],
+            ]);
+
+            return redirect()->back();
+        }
+    }
+
+    public function remove($id)
+    {
+        \Cart::session(auth()->id())->remove($id);
+
+        return redirect()->back();
+    }
+
+    public function clear()
+    {
+        \Cart::session(auth()->id())->clear();
 
         return redirect()->back();
     }
 
     public function bayar()
     {
-        $cart_total = \Cart::session(Auth()->id())->getTotal();
-        $sub_total = \Cart::session(Auth()->id())->getSubTotal();
+        $cart_total = \Cart::session(auth()->id())->getTotal();
+        $sub_total = \Cart::session(auth()->id())->getSubTotal();
         $customer_id = request()->customer_id;
         $bayar = request()->bayar;
         $kembalian = (int) $bayar - (int) $cart_total;
 
-        $diskon = \Cart::session(Auth()->id())->getCondition('diskon');
+        $diskon = \Cart::session(auth()->id())->getCondition('diskon');
 
         if ($kembalian >= 0) {
             DB::beginTransaction();
 
             try {
-                $all_cart = \Cart::session(Auth()->id())->getContent();
+                $all_cart = \Cart::session(auth()->id())->getContent();
 
                 $filterCart = $all_cart->map(function ($item) {
                     return [
@@ -156,7 +218,7 @@ class TransactionController extends Controller
 
                     HistoryProduct::create([
                         'product_id' => $cart['id'],
-                        'user_id' => Auth::id(),
+                        'user_id' => auth()->id(),
                         'qty' => $product->qty,
                         'qtyChange' => -$cart['quantity'],
                         'tipe' => 'decrease from transaction',
@@ -189,7 +251,7 @@ class TransactionController extends Controller
                     ]);
                 }
 
-                \Cart::session(Auth()->id())->clear();
+                \Cart::session(auth()->id())->clear();
 
                 DB::commit();
 
@@ -202,34 +264,6 @@ class TransactionController extends Controller
         }
 
         return redirect()->back()->with('errorTransaksi', 'jumlah pembayaran gak valid');
-    }
-
-    public function clear()
-    {
-        \Cart::session(Auth()->id())->clear();
-
-        return redirect()->back();
-    }
-
-    public function updateCart($id, Request $request)
-    {
-        $product = Product::find($id);
-
-        $cart = \Cart::session(Auth()->id())->getContent();
-        $cek_itemId = $cart->whereIn('id', $id);
-
-        if ($product->qty == $cek_itemId[$id]->quantity) {
-            return redirect()->back()->with('error', 'jumlah item kurang');
-        } else {
-            \Cart::session(Auth()->id())->update($id, [
-                'quantity' => [
-                    'relative' => false,
-                    'value' => $request->qty,
-                ],
-            ]);
-
-            return redirect()->back();
-        }
     }
 
     public function history(Request $request)
