@@ -18,7 +18,8 @@ class CreateTranscationsTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('customer_id')->unsigned();
             $table->integer('pay');
-            $table->integer('discont')->nullable();
+            $table->integer('discount')->nullable();
+            $table->integer('sub_total');
             $table->integer('total');
             $table->timestamps();
         });
