@@ -15,9 +15,10 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('supplier_id')->references('id')->on('suppliers');
             $table->string('sku')->nullable();
             $table->string('name');
-            $table->double('price')->unsigned();
+            $table->integer('price')->unsigned();
             $table->string('image')->nullable();
             $table->integer('qty');
             $table->text('description')->nullable();
