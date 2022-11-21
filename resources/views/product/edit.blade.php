@@ -1,86 +1,59 @@
 @extends('layouts.app')
+@section('title', 'Produk')
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
+<div class="container-xl">
+    <div class="row row-cards">
+        <div class="col-12">
             <div class="card">
-                <div class="card-header bg-white">
-                    <form action="{{ route('products.destroy', $product->id ) }}" method="POST">
-                        <label class="font-weight-bold">
-                            <h4 class="font-weight-bold">Produk</h4>
-                        </label>
-                        @method('delete')
-                        @csrf
-                        <button class="btn btn-danger btn-sm float-right"
-                            onclick="return confirm('Apakah anda yakin menghapus data ini ?');">Hapus Produk</button>
-                    </form>
+                <div class="card-header">
+                    Ubah data
+                    <div class="card-actions">
+                        <a href="javascript:void(0)" class="btn btn-danger delete-data" data-url="{{ route('product.destroy', $product->id) }}" data-token="{{ csrf_token() }}" data-label="{{ $product->name }}">
+                            <i class="ti ti-trash fs-2 me-1"></i> Hapus
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
-                    @if(Session::has('error'))
-                    @include('layouts.flash-error',[ 'message'=> Session('error') ])
-                    @endif
-                    @if(Session::has('success'))
-                    @include('layouts.flash-success',[ 'message'=> Session('success') ])
-                    @endif
-                    <form action="{{url('/products')}}" method="POST" enctype="multipart/form-data">
-                        @csrf
+                    <x-form action="{{url('/product')}}" enctype="multipart/form-data">
+                        @bind($product)
                         <input type="hidden" name="id" value="{{ $product->id }}">
                         <input type="hidden" name="qty" value="{{ $product->qty }}">
-                        <div class="form-group">
-                            <label for="product">Nama Produk</label>
-                            <input type="text" class="form-control" name="name"
-                                value="{{ old('name', $product->name) }}">
-                            @include('layouts.error', ['name' => 'name'])
-                        </div>
+                        <x-form-input label="nama" name="name" floating class="mb-2" />
                         <div class="row">
                             <div class="col">
+                                <x-form-input label="Harga" name="price" type="number" floating class="mb-2" />
                                 <div class="form-group">
-                                    <label for="price">Harga</label>
-                                    <input type="number" class="form-control" name="price"
-                                        value="{{ old('price' , $product->price) }}">
-                                    @include('layouts.error', ['name' => 'price'])
-                                </div>
-                                {{-- <div class="form-group">
-                                    <label>Gambar</label>
-                                    <div>
-                                        <div class="custom-file">
-                                            <br>
-                                            <input name="image" id="image" type="file" class="custom-file-input"
-                                                accept="image/*"
-                                                onchange="document.getElementById('output').src = window.URL.createObjectURL(this.files[0]); document.getElementById('preview').style.display = 'none'"><label
-                                                class="custom-file-label">Choose File</label>
-                                        </div>
+
+                                    <x-form-input label="Gambar" name="image" type="file" floating class="mb-2" accept="image/*" onchange="document.getElementById('output').src = window.URL.createObjectURL(this.files[0]); document.getElementById('preview').style.display = 'none'" />
+                                    <div class="col-sm-12 col-md-6">
+                                        <img id="output" src="" class="img-fluid">
                                     </div>
-                                    <div class="col-sm-12"><img id="output" src="" class="img-fluid"></div>
+
                                     @if($product->image)
                                     <img src="{{asset($product->image)}}" class="img-fluid" id="preview">
                                     @endif
-                                    @include('layouts.error', ['name' => 'image'])
-                                </div> --}}
+                                </div>
                             </div>
                             <div class="col">
-                                <div class="form-group">
-                                    <label for="qty">Qty</label>
-                                    <input type="number" class="form-control" value="{{ old('qty', $product->qty) }}"
-                                        disabled>
-                                </div>
-                                <div class="form-group">
-                                    <label for="addQty">Tambah / Kurangi Qty </label>
-                                    <input type="number" class="form-control" name="addQty" value="{{ old('addQty') }}"
-                                        placeholder="gunakan positif utk tambah | negatif utk mengurangi">
-                                    @if(Session::has('errorQty'))
-                                    <small class="text-danger font-weight-bold">
-                                        {{ Session('errorQty') }}
-                                    </small>
-                                    @endif
-                                </div>
+                                <x-form-input label="Qty" name="qty" type="number" floating class="mb-2" />
+                                <x-form-input label="Tambah / Kurangi Qty" name="addQty" type="number" floating />
+                                <i class="text-muted">gunakan positif utk tambah | negatif utk mengurangi</i>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block">Ubah Produk</button>
+                        @endbind
+                        <div class="form-group mt-6">
+                            <button type="submit" class="btn btn-primary">Ubah Produk</button>
                         </div>
-                    </form>
-                    <H4>Riwayat Produk</H4>
+                    </x-form>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    History
+                </div>
+                <div class="card-table">
                     <table class="table" id="dtMaterialDesignExample">
                         <thead>
                             <tr>

@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -31,10 +32,15 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
 // akun
 
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
+    Route::resource('supplier', SupplierController::class);
     Route::resource('product', ProductController::class);
-    Route::get('/transcation/history', [TransactionController::class, 'history']);
-    Route::get('/transcation/edit/{id}', [TransactionController::class, 'edit'])->name('edit');
-    Route::post('/transcation/update-tanggal/', [TransactionController::class, 'updateTanggal'])->name('update.tanggal');
+    Route::prefix('transcation')->as('transcation.')->group(function () {
+        Route::get('history', [TransactionController::class, 'history'])->name('history');
+        Route::get('edit/{id}', [TransactionController::class, 'edit'])->name('edit');
+        Route::post('update-tanggal', [TransactionController::class, 'updateTanggal'])->name('update.tanggal');
+        Route::get('laporan/{id}', [TransactionController::class, 'laporan'])->name('laporan');
+        Route::get('cetak/laporan/{id}', [TransactionController::class, 'cetakLaporan'])->name('cetak.laporan');
+    });
 });
 
 Route::middleware(['auth', 'role:superadmin'])->group(function () {
@@ -49,7 +55,4 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
         Route::post('update/{id}', [TransactionController::class, 'update'])->name('update');
         Route::post('bayar', [TransactionController::class, 'bayar'])->name('bayar');
     });
-
-    Route::get('/transcation/laporan/{id}', [TransactionController::class, 'laporan'])->name('laporan');
-    Route::get('/transcation/cetak/laporan/{id}', [TransactionController::class, 'cetakLaporan'])->name('cetak.laporan');
 });

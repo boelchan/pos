@@ -13,6 +13,7 @@ use DB;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+
 class TransactionController extends Controller
 {
     public function index()

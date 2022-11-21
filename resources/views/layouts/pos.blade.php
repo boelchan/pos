@@ -77,14 +77,14 @@
                             @foreach ($menuData as $m)                            
                                 @if (Auth::check() && Auth::user()->hasRole($m->role))
                                     <li class="nav-item @isset($m->sub) dropdown @endisset">
-                                        <a href="@if(isset($m->sub)) #navbar-base @else {{ url($m->url) }} @endif" 
+                                        <a href="@if(isset($m->sub)) #navbar-base @else {{ route($m->route) }} @endif" 
                                             class="nav-link @isset($m->sub) dropdown-toggle @endisset 
                                             @if(isset($m->sub))
-                                                @if (Str::startsWith(Route::currentRouteName(), collect($m->sub)->pluck('url')->all()))
+                                                @if (Str::startsWith(Route::currentRouteName(), collect($m->sub)->pluck('route')->all()))
                                                     active
                                                 @endif
                                             @else
-                                                {{ (Str::startsWith(Route::currentRouteName(), $m->url)) ? 'active' : '' }}
+                                                {{ (Str::startsWith(Route::currentRouteName(), $m->route)) ? 'active' : '' }}
                                             @endif
                                             "
                                             @isset($m->sub)
@@ -103,7 +103,7 @@
                                             <div class="dropdown-menu">
                                                 @foreach ($m->sub as $sub)
                                                     @if (Auth::check() && Auth::user()->hasRole($sub->role))
-                                                        <a href="{{ url($sub->url) }}" class="dropdown-item {{ (Str::startsWith(Route::currentRouteName(), $sub->url)) ? 'active' : '' }}">
+                                                        <a href="{{ route($sub->route) }}" class="dropdown-item {{ (Str::startsWith(Route::currentRouteName(), $sub->route)) ? 'active' : '' }}">
                                                             {{ $sub->title }}
                                                         </a>
                                                     @endif

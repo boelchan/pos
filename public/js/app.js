@@ -1,4 +1,4 @@
-$('body').on('click', '.delete-user', function () {
+$('body').on('click', '.delete-data', function () {
     Swal.fire({
         title: 'Hapus ' + $(this).data("label") + '?',
         text: "Data yang telah hapus tidak dapat dikembalikan",

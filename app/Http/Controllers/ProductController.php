@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DataTables\ProductDataTable;
 use App\Models\HistoryProduct;
 use App\Models\Product;
 use File;
@@ -12,15 +13,9 @@ use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(ProductDataTable $productDataTable)
     {
-        $products = Product::when(request('search'), function ($query) {
-            return $query->where('name', 'like', '%'.request('search').'%');
-        })
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(8);
-
-        return view('product.index', compact('products'));
+        return $productDataTable->render('product.index');
     }
 
     public function create()
@@ -138,30 +133,23 @@ class ProductController extends Controller
         }
     }
 
-    public function edit($id)
+    public function edit(Product $product)
     {
-        $product = Product::find($id);
-        $history = HistoryProduct::where('product_id', $id)->orderBy('created_at', 'desc')->get();
+        $breadcrumbs = [['url' => route('product.index'), 'title' => 'Produk'], ['title' => 'Edit '.$product->name]];
 
-        return view('product.edit', compact('product', 'history'));
+        $history = HistoryProduct::where('product_id', $product->id)->orderBy('created_at', 'desc')->get();
+
+        return view('product.edit', compact('product', 'history', 'breadcrumbs'));
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy(Product $product)
     {
-        DB::beginTransaction();
-
-        try {
-            $product = Product::find($id);
+        if (! $product->history()->count()) {
             $product->delete();
-            File::delete(public_path($product->image));
 
-            DB::commit();
-
-            return redirect()->route('products.index')->with('success', 'Product berhasil dihapus');
-        } catch (\Exeception $e) {
-            DB::rollback();
-
-            return redirect()->route('products.index')->with('error', $e);
+            return response()->json(['message' => 'Berhasil dihapus']);
         }
+
+        return response()->json(['message' => 'Data sedang digunakan'], 400);
     }
 }

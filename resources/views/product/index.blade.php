@@ -1,90 +1,27 @@
 @extends('layouts.app')
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-12">
-            <div class="card" style="min-height: 85vh">
-                <div class="card-header bg-white">
-                    <form action="{{ route('products.index') }}" method="get">
-                        <div class="row">  
-                            <div class="col"><h4 class="font-weight-bold">Produk</h4></div>
-                            <div class="col"><input type="text" name="search"
-                                    class="form-control form-control-sm col-sm-10 float-right"
-                                    placeholder="Search Product..." onblur="this.form.submit()"></div>
-                            <div class="col-sm-2"><a href="{{ url('/products/create')}}"
-                                    class="btn btn-primary btn-sm float-right btn-block">Add Product</a></div>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body">
-                    @if(Session::has('success'))
-                    @include('layouts.flash-success',[ 'message'=> Session('success') ])
-                    @endif
-                    <div class="row">
-                        <table class="table">
-                            <thead>
-                                <th>No</th>
-                                <th>Nama</th>
-                                <th>Harga</th>
-                                <th>Qty</th>
-                                <th></th>
-                            </thead>
-                            <tbody>
-                                @foreach ($products as $key => $product)
-                                    <tr>
-                                        <td>{{ $key+1 }}</td>
-                                        <td>{{ $product->name }}</td>
-                                        <td>{{ $product->price }}</td>
-                                        <td>{{ $product->qty }}</td>
-                                        <td><a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary btn-block btn-sm">Details</a></td>
-                                    </tr>
-                                {{-- <div class="col-sm-3">
-                                    <div class="card mb-3">
-                                        <div class="view overlay">
-                                            <img class="card-img-top gambar" src="{{ $product->image }}" alt="Card image cap">
-                                            <a href="#!">
-                                                <div class="mask rgba-white-slight"></div>
-                                            </a>
-                                        </div>
-                                        <div class="card-body">
-                                            <h5 class="card-title text-center font-weight-bold"
-                                                style="text-transform: capitalize;">
-                                                {{ Str::words($product->name,6) }}</h5>
-                                            <p class="card-text text-center">Rp. {{ number_format($product->price,2,',','.') }}
-                                            </p>
-                                            <a href="{{ route('products.edit', $product->id) }}"
-                                                class="btn btn-primary btn-block btn-sm">Details</a>
-                                        </div>
-                                    </div>
-                                </div> --}}
-                            
-                                @endforeach
-                            </tbody>
-                        </table>
 
-                    </div>
-                </div>
-                <div>{{ $products->links() }}</div>
+@section('title', 'Produk')
+
+@section('content')
+<div class="container-xl">
+    <div class="col-md-12">
+        
+        {{-- <x-datatable.filter target='user-table'>
+            <div class="col-md-3">
+                <x-form-input name="name" label="Nama" floating />
+            </div>
+        </x-datatable.filter> --}}
+
+        <div class="card">
+            <div class="card-table">
+                {{ $dataTable->table(['class' => 'table table-hover table-sm w-100 border-bottom']) }}
             </div>
         </div>
     </div>
-    @endsection
+</div>
+@endsection
 
-    @push('style')
-    <style>
-        .gambar {
-            width: 100%;
-            height: 175px;
-            padding: 0.9rem 0.9rem
-        }
-
-        @media only screen and (max-width: 600px) {
-            .gambar {
-                width: 100%;
-                height: 100%;
-                padding: 0.9rem 0.9rem
-            }
-        }
-
-    </style>
-    @endpush
+@section('page-script')
+    <script src="{{ asset('js/datatables/actions.js') }}"></script>
+    {{ $dataTable->scripts() }}
+@endsection

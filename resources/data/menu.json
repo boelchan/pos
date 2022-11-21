@@ -2,7 +2,7 @@
     {
         "title": "Home",
         "icon": "home",
-        "url": "home",
+        "route": "home",
         "role": [
             "superadmin"
         ]
@@ -10,7 +10,7 @@
     {
         "title": "Kasir",
         "icon": "shopping-cart",
-        "url": "cart",
+        "route": "cart.index",
         "role": [
             "superadmin"
         ]
@@ -18,9 +18,32 @@
     {
         "title": "Transaksi",
         "icon": "list-check",
-        "url": "transcation/history",
+        "route": "transcation.history",
         "role": [
             "superadmin"
+        ]
+    },
+    {
+        "title": "Gudang",
+        "icon": "building-store",
+        "role": [
+            "superadmin"
+        ],
+        "sub": [
+            {
+                "title": "Supplier",
+                "route": "supplier.index",
+                "role": [
+                    "superadmin"
+                ]
+            },
+            {
+                "title": "Produk",
+                "route": "product.index",
+                "role": [
+                    "superadmin"
+                ]
+            }
         ]
     },
     {
@@ -32,7 +55,7 @@
         "sub": [
             {
                 "title": "User",
-                "url": "user",
+                "route": "user.index",
                 "role": [
                     "superadmin"
                 ]
